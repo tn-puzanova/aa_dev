@@ -41,15 +41,15 @@ return [
             'errorAction' => 'site/error',
         ],
 
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                "index" => "/",
-                "site" => "",
-                'auth/' => '/',
-            ],
-        ],
+  //      'urlManager' => [
+    //        'enablePrettyUrl' => true,
+      //      'showScriptName' => false,
+        //    'rules' => [
+          //      "index" => "/",
+            //    "site" => "",
+              //  'auth/' => '/',
+          //  ],
+      //  ],
 
     ],
     'params' => $params,

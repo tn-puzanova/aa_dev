@@ -32,6 +32,10 @@ class TestAttempt extends ActiveRecord
         $this->reward_status = $status;
     }
 
+    public function seStatus($status)
+    {
+        $this->status = $status;
+    }
 
     public function setNomination($nomination)
     {
@@ -86,6 +90,14 @@ class TestAttempt extends ActiveRecord
         return $this->mark > 0;
     }
 
+    public function  ballGold () {
+        return $this->mark >= TestAttemptHelper::MIN_BALL_GOLD;
+    }
+
+    public function  ballNoGold () {
+        return $this->mark >= TestAttemptHelper::MIN_BALL_NO_GOLD;
+    }
+
     public function  isRewardGold() {
         return $this->reward_status == TestAttemptHelper::GOLD;
     }
@@ -100,6 +112,14 @@ class TestAttempt extends ActiveRecord
 
     public function  isRewardMember() {
         return $this->reward_status == TestAttemptHelper::MEMBER;
+    }
+
+    public function  isAttemptEnd() {
+        return $this->status == TestAttemptHelper::END_TEST;
+    }
+
+    public function  isAttemptNoEnd() {
+        return $this->status == TestAttemptHelper::NO_END_TEST;
     }
 
     public function isNullNomination()

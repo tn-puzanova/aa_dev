@@ -9,7 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-operator',
     'basePath' => dirname(__DIR__),
-    'name' => "АИС Абитуриент",
+    'name' => "ЛК организатора олимпиад и конкурсов",
     'aliases' => [
         '@frontendRoot' => $params['staticPath'],
         '@frontendInfo' => $params['staticHostInfo'],
@@ -21,10 +21,10 @@ return [
         'elfinder' => [
             'class' => \mihaildev\elfinder\Controller::class,
             'access' => ['@', '?'], //глобальный доступ к фаил менеджеру @ - для авторизорованных , ? - для гостей , чтоб открыть всем ['@', '?']
-            'disabledCommands' => ['netmount'], //отключение ненужных команд https://github.com/Studio-42/elFinder/wiki/Client-configuration-options#commands
+            'disabledCommands' => ['netmount'], //отключение ненужных команд https://github.com/Studio-42/elFinder/wiki/Client-configuration-options#...
             'roots' => [
                 [
-                    'baseUrl' => '@frontend',
+                    'baseUrl' => '@frontendInfo',
                     'basePath' => '@frontendRoot',
                     'path' => '/',
                     'name' => 'Global',
@@ -40,17 +40,19 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-operator',
+            //'baseUrl'=> '/manager',
         ],
         'user' => [
             'identityClass' => 'common\auth\Identity',
 //            'enableAutoLogin' => true,
-//            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+//            'identityCookie' => ['name' => '_identity-operator', 'httpOnly' => true],
             'authTimeout' => 60 * 60 * 24, //100 дней для примера
             'loginUrl' => ['auth/auth/login'],
         ],
+        //'authClientCollection' => require __DIR__ . '/../../common/config/social.php',
         'session' => [
-            // this is the name of the session cookie used for login on the backend
-            'name' => 'operator',
+            // this is the name of the session cookie used for login on the operator
+            'name' => 'advanced-operator',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -64,7 +66,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-
 
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -80,7 +81,7 @@ return [
         'rules' => [
             [
                 'allow' => true,
-                'roles' => ['olympic_manager']
+                'roles' => ['olymp_operator']
             ]
         ]],
 

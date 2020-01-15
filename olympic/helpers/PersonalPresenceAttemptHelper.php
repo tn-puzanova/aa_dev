@@ -19,6 +19,9 @@ class PersonalPresenceAttemptHelper
     const SECOND_PLACE = 2;
     const THIRD_PLACE = 3;
 
+    const MIN_BALL_FIRST_PLACE = 75;
+    const MIN_BALL_NO_FIRST_PLACE = 50;
+
 
     public static function nameOfPlaces()
     {
@@ -68,7 +71,7 @@ class PersonalPresenceAttemptHelper
             self::FIRST_PLACE => 'победителем',
             self::SECOND_PLACE => 'призером II степени',
             self::THIRD_PLACE => 'призером III степени',
-            null => 'участником заочного тура',
+            null => 'участником',
         ];
     }
 

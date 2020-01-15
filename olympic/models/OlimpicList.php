@@ -186,7 +186,7 @@ class OlimpicList extends \yii\db\ActiveRecord
             'content' => 'Аннотация на главную страницу олимпиады',
             'required_documents' => 'Необходимые документы на очный тур',
             'year' => 'Учебный год',
-            'certificate_id' => 'Выдается сертификат участнику очного тура',
+            'certificate_id' => 'Выдается сертификат участнику',
             'date_range' => 'Дата и время начала регистрации - дата и время завершения регистрации',
             'percent_to_calculate' => 'Процент участников в следующий тур',
         ];
@@ -384,6 +384,10 @@ class OlimpicList extends \yii\db\ActiveRecord
 
     public function isStatusPreliminaryFinish() {
         return $this->current_status == OlympicHelper::PRELIMINARY_FINISH;
+    }
+
+    public function isCertificate() {
+        return $this->certificate_id == OlympicHelper::CERTIFICATE_YES;
     }
 
 

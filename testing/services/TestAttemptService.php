@@ -93,6 +93,7 @@ class TestAttemptService
         $test  = $this->testRepository->isActive($test_id);
         $testAttempt = $this->testAttemptRepository->isAttempt($test->id);
         $testResult  = TestResult::find()->where(['attempt_id'=>$testAttempt->id])->sum('mark');
+        $testAttempt->seStatus(TestAttemptHelper::END_TEST);
         $testAttempt->edit($testResult);
         $this->testAttemptRepository->save($testAttempt);
         return $testAttempt;
@@ -126,11 +127,14 @@ class TestAttemptService
         $olympic= $this->olimpicListRepository->isFinishDateRegister($olympic_id);
         $test= $this->testRepository->get($test_id);
         if ($this->countAttempt($test->id) < OlympicHelper::COUNT_USER_ZAOCH) {
-            throw  new \DomainException('Количество присутствующих участников меньше '.OlympicHelper::COUNT_USER_ZAOCH.'. Если это действительно так, 
+            throw  new \DomainException('Количество  участников заочного тура меньше '.OlympicHelper::COUNT_USER_ZAOCH.'. Если это действительно так,
             то сообщите, о несостоявшейся олимпиаде аднимистраторам портала');
         }
         elseif(!$this->isRewardStatus($test->id)) {
             throw new \DomainException("Поставьте все призовые места участникам");
+        }
+        elseif($this->countRewardStatus($test->id)  > $this->countDefaultRewards($test->id)) {
+            throw new \DomainException("Число победителей и призеров (в сумме) не должно превышать 40%(".$this->countDefaultRewards($test->id).") от общего числа участников");
         }
         elseif(!$this->isCorrectCountNomination($test->id, $olympic->id)) {
             throw new \DomainException("Отметьте номминации");
@@ -138,11 +142,16 @@ class TestAttemptService
         elseif(!$this->isMaxMarkOnFirstPlace($test->id)) {
             throw new \DomainException("Участник, который получил максимальный балл, не является победителем");
         }
-        elseif(!$this->isCorrectCountNomination($test->id, $olympic->id)) {
-            throw new \DomainException("Отметьте номминации");
+        elseif($this->countRewardFirstStatus($test->id)  > $this->countDefaultRewardsFirst($test->id)) {
+            throw new \DomainException("Количество победителей Мероприятия не должно превышать 10% (".$this->countDefaultRewardsFirst($test->id).") от общего количества участников");
         }
         else {
-            $rewardUser = TestAttempt::find()->test($test->id)->isNotNullRewards()->all();
+            if($olympic->isCertificate()) {
+                $rewardUser =  TestAttempt::find()->test($test->id)->isNotNullMark()->all();
+            }
+            else {
+                $rewardUser =TestAttempt::find()->test($test->id)->isNotNullRewards()->all();
+            }
             if (!Diploma::find()->olympic($olympic->id)->exists()) {
                 foreach ($rewardUser as $eachUser) {
                     $diploma= Diploma::create($eachUser->user_id, $olympic->id, $eachUser->reward_status, $eachUser->nomination_id);
@@ -156,6 +165,28 @@ class TestAttemptService
 
     private function countAttempt($test_id) {
         return TestAttempt::find()->test($test_id)->count();
+    }
+
+    private function countAttemptNotNullMark($test_id) {
+        return TestAttempt::find()->test($test_id)->isNotNullMark()->count();
+    }
+
+    private function countDefaultRewards($test_id) {
+        return round(($this->countAttemptNotNullMark($test_id)*OlympicHelper::USER_REWARDS)/100);
+    }
+
+    private function countDefaultRewardsFirst($test_id) {
+        return round(($this->countAttemptNotNullMark($test_id)*OlympicHelper::USER_REWARDS_GOLD)/100);
+    }
+
+    private function countRewardStatus($test_id) {
+        return TestAttempt::find()->test($test_id)
+            ->andWhere(['reward_status'=> [TestAttemptHelper::GOLD, TestAttemptHelper::BRONZE, TestAttemptHelper::SILVER]])->count();
+    }
+
+    private function countRewardFirstStatus($test_id) {
+        return TestAttempt::find()->test($test_id)
+            ->andWhere(['reward_status'=> TestAttemptHelper::GOLD])->count();
     }
 
     private function inRewardStatus($test_id, $status) {

@@ -5,12 +5,18 @@ use yii\helpers\ArrayHelper;
 
 class TestAttemptHelper
 {
-    const NOMINATION = 5;
+    const NOMINATION = 0;
     const GOLD = 1;
     const SILVER = 2;
     const BRONZE = 3;
     const MEMBER = 4;
     const REWARD_NULL = null;
+
+    const NO_END_TEST = 0;
+    const END_TEST = 1;
+
+    const MIN_BALL_GOLD = 75;
+    const MIN_BALL_NO_GOLD = 50;
 
     public static function count($test){
         return TestAttempt::find()->test($test)->count();
@@ -18,6 +24,10 @@ class TestAttemptHelper
 
     public static function isAttempt($test, $user){
         return TestAttempt::find()->test($test)->user($user)->exists();
+    }
+
+    public static function Attempt($test, $user){
+        return TestAttempt::find()->test($test)->user($user)->one();
     }
 
 

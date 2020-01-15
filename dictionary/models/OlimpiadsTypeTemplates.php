@@ -5,6 +5,7 @@ namespace dictionary\models;
 
 use dictionary\forms\OlimpiadsTypeTemplatesCreateForm;
 use dictionary\forms\OlimpiadsTypeTemplatesEditForm;
+use dictionary\models\queries\OlimpiadsTypeTemplatesQuery;
 use yii\db\ActiveRecord;
 
 class OlimpiadsTypeTemplates extends ActiveRecord
@@ -25,6 +26,7 @@ class OlimpiadsTypeTemplates extends ActiveRecord
         $olimpiadsTypeTemplates->edu_level_olimp = $form->edu_level_olimp;
         $olimpiadsTypeTemplates->template_id = $template_id;
         $olimpiadsTypeTemplates->special_type = $special_type;
+        $olimpiadsTypeTemplates->year = $form->year;
         return $olimpiadsTypeTemplates;
     }
 
@@ -33,6 +35,7 @@ class OlimpiadsTypeTemplates extends ActiveRecord
         $this->number_of_tours = $form->number_of_tours;
         $this->form_of_passage = $form->form_of_passage;
         $this->edu_level_olimp = $form->edu_level_olimp;
+        $this->year = $form->year;
         $this->template_id = $template_id;
         $this->special_type = $special_type;
     }
@@ -48,6 +51,7 @@ class OlimpiadsTypeTemplates extends ActiveRecord
             'edu_level_olimp' => 'Уровень олимпиады',
             'template_id' => 'Шаблон',
             'special_type' => 'Специальный вид олимпиады (можно не заполнять)',
+            'year' => "Учебный год"
 
         ];
     }
@@ -56,6 +60,11 @@ class OlimpiadsTypeTemplates extends ActiveRecord
     {
         $olimpiadsTypeTemplates = new static();
         return $olimpiadsTypeTemplates->attributeLabels();
+    }
+
+    public static function find(): OlimpiadsTypeTemplatesQuery
+    {
+        return new OlimpiadsTypeTemplatesQuery(static::class);
     }
 
 

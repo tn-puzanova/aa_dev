@@ -29,7 +29,8 @@ class ResetController extends Controller
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
                 $this->service->request($form);
-                Yii::$app->session->setFlash('success', 'Проверьте свою электронную почту для получения дальнейших инструкций.');
+                Yii::$app->session->setFlash('success', 'Проверьте свою электронную почту и следуйте инструкциям, 
+                указаным в письме.');
                 return $this->goHome();
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
@@ -59,7 +60,7 @@ class ResetController extends Controller
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
                 $this->service->reset($token, $form);
-                Yii::$app->session->setFlash('success', 'Новый пароль сохранен');
+                Yii::$app->session->setFlash('success', 'Пароль изменен!');
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
                 Yii::$app->session->setFlash('error', $e->getMessage());

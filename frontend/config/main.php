@@ -8,10 +8,11 @@ $params = array_merge(
 
 return [
     'id' => 'app-frontend',
+    'name' => 'Личный кабинет поступающего в МПГУ',
     'basePath' => dirname(__DIR__),
     'aliases' => [
-        '@staticRoot' => $params['staticPath'],
-        '@static'   => $params['staticHostInfo'],
+       '@frontendRoot' => $params['staticPath'],
+        '@frontendInfo' => $params['staticHostInfo'],
     ],
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
@@ -21,8 +22,41 @@ return [
         ],
         'user' => [
             'identityClass' => 'common\auth\Identity',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+//            'enableAutoLogin' => true,
+//            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'authTimeout' => 60 * 60 * 24, //100 дней для примера
+            'loginUrl' => ['auth/auth/login'],
+        ],
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+//                'google' => [
+//                    'class' => 'yii\authclient\clients\Google',
+//                    'clientId' => 'google_client_id',
+//                    'clientSecret' => 'google_client_secret',
+//                ],
+
+                'yandex' => [
+                    'class' => 'yii\authclient\clients\Yandex',
+                    'clientId' => '14ccd7cc6ae04ed680e250aa2b65a369',
+                    'clientSecret' => 'f2ed1d137a0443529b607514ad49985f',
+                ],
+
+                'facebook' => [
+                    'class' => 'yii\authclient\clients\Facebook',
+                    'clientId' => '993150624227282',
+                    'clientSecret' => '062d3794e0913366d9dd9aef50bfbd4f',
+                    'scope' => 'email',
+                ],
+
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => '6840071',
+                    'clientSecret' => 'kjKLyc2zgJB5k9pL80A9',
+                    'scope' => 'email',
+                ]
+
+            ],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -41,16 +75,27 @@ return [
             'errorAction' => 'site/error',
         ],
 
-  //      'urlManager' => [
-    //        'enablePrettyUrl' => true,
-      //      'showScriptName' => false,
-        //    'rules' => [
-          //      "index" => "/",
-            //    "site" => "",
-              //  'auth/' => '/',
-          //  ],
-      //  ],
 
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                "index" => "/",
+                "site" => "",
+                'auth/' => '/',
+            ],
+        ],
     ],
+    'as access' => [
+        'class' => 'yii\filters\AccessControl',
+        'except' => ['olympiads/*', 'dod/*', 'print/*',
+            'diploma/*','auth/signup/*', 'auth/reset/*','site/*', 'auth/auth/login', 'invitation/*',
+            'auth/auth/auth', 'schools/*'],
+        'rules' => [
+            [
+                'allow' => true,
+                'roles' => ['@']
+            ]
+        ]],
     'params' => $params,
 ];

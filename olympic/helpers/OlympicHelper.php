@@ -55,6 +55,16 @@ class OlympicHelper
     const ZAOCH_FINISH = 1;
     const OCH_FINISH = 2;
 
+    const APPELLATION = 3;
+    const PRELIMINARY_FINISH  = 4;
+    const NO_FINISH = 5;
+
+    const COUNT_USER_OCH = 10;
+    const COUNT_USER_ZAOCH = 25;
+
+    const ACTIVE = 0;
+    const DRAFT = 1;
+
     public static function typeOfTimeDistanceTour()
     {
         return [
@@ -63,6 +73,23 @@ class OlympicHelper
             self::TIME_REG => 'Выполнить задания необходимо до завершения периода регистрации на настоящее Мероприятие',
         ];
     }
+
+    public static function statusList()
+    {
+        return [
+            self::ACTIVE => 'Активный',
+            self::DRAFT => 'Неактивный',
+        ];
+    }
+
+    public static function statusListValid()
+    {
+        return [
+            self::ACTIVE, self::DRAFT
+        ];
+    }
+
+
 
     public static function typeOfTimeDistanceTourValid()
     {
@@ -150,8 +177,8 @@ class OlympicHelper
     public static function prefilling()
     {
         return [
-            self::PREFILING_BAS => 'основное',
-            self::PREFILING_PRE => 'предварительное',
+            self::PREFILING_BAS => 'Опубликовано',
+            self::PREFILING_PRE => 'Черновик',
         ];
     }
 
@@ -168,6 +195,11 @@ class OlympicHelper
     public static function numberOfToursName($key)
     {
         return ArrayHelper::getValue(self::numberOfTours(), $key);
+    }
+
+    public static function statusName($key)
+    {
+        return ArrayHelper::getValue(self::statusList(), $key);
     }
 
     public static function listPositionName($key)
@@ -195,13 +227,18 @@ class OlympicHelper
         return ArrayHelper::getValue(self::prefilling(), $key);
     }
 
-    public static function olimpicList(): array
+    public static function olympicList(): array
     {
         return ArrayHelper::map(Olympic::find()->all(), "id", 'name');
     }
 
-    public static function olimpicName($key): string
+    public static function olympicManagerList()
     {
-        return ArrayHelper::getValue(self::olimpicList(), $key);
+        return Olympic::find()->manager(\Yii::$app->user->identity->getId())->select('id')->column();
+    }
+
+    public static function olympicName($key): string
+    {
+        return ArrayHelper::getValue(self::olympicList(), $key);
     }
 }

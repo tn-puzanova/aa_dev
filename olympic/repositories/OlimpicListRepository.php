@@ -4,15 +4,46 @@
 namespace olympic\repositories;
 
 
+use common\helpers\EduYearHelper;
+use olympic\helpers\OlympicHelper;
+use olympic\models\ClassAndOlympic;
 use olympic\models\OlimpicList;
+use yii\web\HttpException;
 
 class OlimpicListRepository
 {
 
+    public function getEduYear($id): OlimpicList
+    {
+        if (!$model = OlimpicList::findOne(['id' => $id, 'year' => EduYearHelper::eduYear() ])) {
+            throw new \DomainException('Данная олимпиада не имеет запись на '.EduYearHelper::eduYear(). ' учебынй год!');
+        }
+        return $model;
+    }
+
     public function get($id): OlimpicList
     {
         if (!$model = OlimpicList::findOne($id)) {
-            throw new \DomainException('Olympic не найдено.');
+            throw new HttpException('403', "Нет такой олимпиады");
+        }
+        return $model;
+    }
+
+    public function getManager($id)
+    {
+        if (($model = OlimpicList::find()->where(['id'=>$id,'olimpic_id'=>OlympicHelper::olympicManagerList()])->one()) !== null) {
+            return $model;
+        }
+       throw new HttpException('403', "Нет такой олимпиады");
+    }
+
+
+    public function isFinishDateRegister($id): OlimpicList
+    {
+        if (!$model = OlimpicList::find()->andWhere(['id'=> $id ])
+            ->andWhere(['<','date_time_finish_reg', date('Y-m-d H:i:s')])
+            ->one()) {
+            throw new \DomainException('Результаты можно подводить после окончания регистрации или заочного тура!.');
         }
         return $model;
     }

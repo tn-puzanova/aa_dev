@@ -7,6 +7,8 @@ namespace dictionary\models;
 use dictionary\forms\DictSchoolsCreateForm;
 use dictionary\forms\DictSchoolsEditForm;
 use dictionary\forms\DictSpecialityCreateForm;
+use dictionary\helpers\DictCountryHelper;
+use dictionary\models\queries\DictSchoolsQuery;
 
 class DictSchools extends \yii\db\ActiveRecord
 {
@@ -18,20 +20,20 @@ class DictSchools extends \yii\db\ActiveRecord
         return 'dict_schools';
     }
 
-    public static function create(DictSchoolsCreateForm $form)
+    public static function create($name, $country_id, $region_id)
     {
         $schools = new static();
-        $schools->name = $form->name;
-        $schools->country_id = $form->country_id;
-        $schools->region_id = $form->region_id;
+        $schools->name = $name;
+        $schools->country_id = $country_id;
+        $schools->region_id =  $country_id == DictCountryHelper::RUSSIA ? $region_id : null;
         return $schools;
     }
 
-    public function edit(DictSchoolsEditForm $form)
+    public function edit($name, $country_id, $region_id)
     {
-        $this->name = $form->name;
-        $this->country_id = $form->country_id;
-        $this->region_id = $form->region_id;
+        $this->name = $name;
+        $this->country_id = $country_id;
+        $this->region_id =  $country_id == DictCountryHelper::RUSSIA ? $region_id : null;
     }
 
     /**
@@ -52,5 +54,11 @@ class DictSchools extends \yii\db\ActiveRecord
         $schools = new static();
         return $schools->attributeLabels();
     }
+
+    public static function find(): DictSchoolsQuery
+    {
+        return new DictSchoolsQuery(static::class);
+    }
+
 
 }

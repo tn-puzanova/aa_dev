@@ -9,9 +9,10 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
+    'name' => "АИС Абитуриент",
     'aliases' => [
-        '@staticRoot' => $params['staticPath'],
-        '@static'   => $params['staticHostInfo'],
+        '@frontendRoot' => $params['staticPath'],
+        '@frontendInfo' => $params['staticHostInfo'],
     ],
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -23,8 +24,8 @@ return [
             'disabledCommands' => ['netmount'], //отключение ненужных команд https://github.com/Studio-42/elFinder/wiki/Client-configuration-options#commands
             'roots' => [
                 [
-                    'baseUrl' => '@static',
-                    'basePath' => '@staticRoot',
+                    'baseUrl' => '@frontend',
+                    'basePath' => '@frontendRoot',
                     'path' => '/',
                     'name' => 'Global',
                     'options' => [
@@ -42,8 +43,9 @@ return [
         ],
         'user' => [
             'identityClass' => 'common\auth\Identity',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+//            'enableAutoLogin' => true,
+//            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'authTimeout' => 60 * 60 * 24, //100 дней для примера
             'loginUrl' => ['auth/auth/login'],
         ],
         'session' => [
@@ -64,13 +66,23 @@ return [
         ],
 
 
-  /*      'urlManager' => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-*/
+
     ],
+    'as access' => [
+        'class' => 'yii\filters\AccessControl',
+        'except' => ['auth/auth/login', 'site/error', 'auth/auth/logout'],
+        'rules' => [
+            [
+                'allow' => true,
+                'roles' => ['dev']
+            ]
+        ]],
+
     'params' => $params,
 ];

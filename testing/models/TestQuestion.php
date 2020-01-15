@@ -3,34 +3,32 @@
 
 namespace testing\models;
 
-
-use tests\forms\TestQuestionForm;
+use testing\forms\question\TestQuestionForm;
+use testing\forms\question\TestQuestionEditForm;
 use yii\db\ActiveRecord;
 
 class TestQuestion extends ActiveRecord
 {
 
-    public static function create(TestQuestionForm $form, $group_id)
+    public static function create(TestQuestionForm $form, $group_id, $file_type_id, $options, $olympic_id)
     {
         $testQue = new static();
         $testQue->type_id = $form->type_id;
         $testQue->title = $form->title;
-        $testQue->mark = $form->mark;
+        $testQue->mark = null;
         $testQue->text = $form->text;
-        $testQue->file_type_id = $form->file_type_id;
-        $testQue->options = $form->options;
+        $testQue->file_type_id = $file_type_id ?? null;
+        $testQue->options = $options;
         $testQue->group_id = $group_id;
+        $testQue->olympic_id = $olympic_id;
         return $testQue;
     }
 
-    public function edit(TestQuestionForm $form, $group_id)
+    public function edit(TestQuestionEditForm $form,  $group_id, $file_type_id)
     {
-        $this->type_id = $form->type_id;
         $this->title = $form->title;
-        $this->mark = $form->mark;
         $this->text = $form->text;
-        $this->file_type_id = $form->file_type_id;
-        $this->options = $form->options;
+        $this->file_type_id = $file_type_id ?? null;
         $this->group_id = $group_id;
     }
 
@@ -57,11 +55,13 @@ class TestQuestion extends ActiveRecord
         ];
     }
 
+
     public static function labels()
     {
         $testQue = new static();
-        $testQue->attributeLabels();
+        return $testQue->attributeLabels();
     }
+
 
 
 }

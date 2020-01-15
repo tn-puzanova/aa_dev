@@ -1,15 +1,18 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $olimpiadsTypeTemplates \dictionary\models\OlimpiadsTypeTemplates */
-/* @var $model \dictionary\forms\OlimpiadsTypeTemplatesEditForm*/
+/* @var $model \dictionary\forms\OlimpiadsTypeTemplatesEditForm */
 /* @var $form yii\widgets\ActiveForm */
 
 ?>
 <div>
-    <?php $form = ActiveForm::begin(['id' => 'form-olimpiads-type-templates', 'enableAjaxValidation' => true]); ?>
+    <?php $form = ActiveForm::begin(['id' => 'form-olympiads-type-templates', 'enableAjaxValidation' => true]); ?>
+
+    <?= $form->field($model, 'year')->dropDownList($model->years()) ?>
 
     <?= $form->field($model, 'number_of_tours')->dropDownList($model->numberOfTours()) ?>
 
@@ -17,7 +20,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'edu_level_olimp')->dropDownList($model->levelOlimp()) ?>
 
-    <?= $form->field($model, 'special_type')->dropDownList($model->specialTypeOlimpicList()); ?>
+    <?= $form->field($model, 'special_type')->dropDownList($model->specialTypeOlimpicList(), ['prompt' => "Выберите специальный тип"]); ?>
 
     <?= $form->field($model, 'template_id')->dropDownList($model->templatesList()) ?>
 

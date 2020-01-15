@@ -11,12 +11,12 @@ use yii\helpers\Html;
 
 $this->title = 'Олимпиады/конкурсы';
 $this->params['breadcrumbs'][] = $this->title;
-\backend\assets\ModalAsset::register($this)
+\backend\assets\modal\ModalAsset::register($this)
 ?>
 <div class="box box-default">
     <div class="box box-header">
         <?=Html::a('Добавить', ['create',],
-            ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'target' => '#modal', 'data-modalTitle' =>'Добавить', 'class'=>'btn btn-primary']) ?>
+            ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-target' => '#modal', 'data-modalTitle' =>'Добавить', 'class'=>'btn btn-primary']) ?>
     </div>
     <div class="box-body">
         <?= \backend\widgets\adminlte\grid\GridView::widget([
@@ -25,13 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => \yii\grid\SerialColumn::class],
                 'name',
-                'status',
+                ['attribute' => 'status',
+                    'filter' => $searchModel->statusList(),
+                    'value' => function (\olympic\models\Olympic $model) {
+                        return \olympic\helpers\OlympicHelper::statusName($model->status);
+                    },
+                ],
                 ['class' => \yii\grid\ActionColumn::class,
                     'buttons' => [
                         'update' => function ($url,$model) {
                             return Html::a(
                                 '<span class="glyphicon glyphicon-edit"></span>',
-                                $url, ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-modalTitle' =>'Редактировать', 'target' => '#modal']);
+                                $url, ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-modalTitle' =>'Редактировать', 'data-target' => '#modal']);
                         },
                     ]
                 ],

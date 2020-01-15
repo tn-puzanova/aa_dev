@@ -4,11 +4,10 @@
 
 /* @var $content string */
 
-use app\widgets\Alert;
+use dmstr\widgets\Alert;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use app\assets\AppAsset;
+
+use frontend\assets\AppAsset;
 
 AppAsset::register($this);
 ?>
@@ -23,7 +22,7 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <?php if (!($_SERVER['HTTP_HOST'] === 'olympic:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru')) : ?>
+    <?php if (!($_SERVER['HTTP_HOST'] == '127.0.0.1:8080' or $_SERVER['HTTP_HOST'] == 'olympic:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru' or $_SERVER['HTTP_HOST'] == 'sdo.frontend.ru')) : ?>
 
         <script src="https://vk.com/js/api/openapi.js?159" type="text/javascript"></script>
 
@@ -35,47 +34,11 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
-    NavBar::begin([
-//       'brandLabel' => Html::img('@web/img/logo.png', ['width'=> '35', 'height'=> '35', 'style'=> 'margin-bottom:10px']),
-//        'brandUrl' => Yii::$app->homeUrl,
-        'innerContainerOptions' => ['class' => 'container-fluid'],
-        'options' => array_merge(
-            ['class' => 'navbar-inverse navbar-fixed-top mb-30'],
-            $_SERVER['HTTP_HOST'] === 'sdo.mpgu.org' ? ['style' => 'background-color: #204462'] :
-                ($_SERVER['HTTP_HOST'] === 'olympic:8080' ? ['style' => 'background-color: #621414'] : ['style' => 'background-color: #24a22d'])),
-
-    ]);
-
-
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => require __DIR__ . '/_menu.php',
-    ]);
-
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right pr-30'],
-        'items' => [
-            Yii::$app->user->isGuest ?
-                ['label' => 'Олимпиады/конкурсы', 'url' => ['/site/olympiads']] : ['label' => ''],
-            Yii::$app->user->isGuest ?
-                ['label' => 'Дни открытых дверей', 'url' => ['site/dod']] : ['label' => ''],
-            Yii::$app->user->isGuest ?
-                ['label' => 'Мастер-классы', 'url' => ['/site/master-classes']] : ['label' => ''],
-            Yii::$app->user->isGuest ?
-                ['label' => 'Регистрация', 'url' => ['site/signup']] : ['label' => ''],
-
-            Yii::$app->user->isGuest ?
-                ['label' => 'Вход', 'url' => ['site/login']] :
-                ['label' => 'выход (' . Yii::$app->user->identity->username . ')',
-                    'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
-        ]
-
-    ]);
-    NavBar::end();
+    require_once ('_menu.php');
     ?>
 
     <?php if (Yii::$app->user->isGuest) {
-        echo Html::a(Html::img('@web/img/logo.jpg', ['width' => '100%', 'height' => '100%', 'class' => 'hidden-xs mt-30']), 'login');
+        echo Html::img('@web/img/main_banner.jpg', ['width' => '100%', 'height' => '100%', 'class' => 'hidden-xs mt-30']);
     } ?>
 
     <div class="container mt-30">
@@ -84,8 +47,7 @@ AppAsset::register($this);
     </div>
 </div>
 
-<?php if (!($_SERVER['HTTP_HOST'] === 'olympic:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru')) : ?>
-
+<?php if (!( $_SERVER['HTTP_HOST'] == '127.0.0.1:8080' or $_SERVER['HTTP_HOST'] === 'aa:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru' )): ?>
 
     <!-- VK Widget -->
     <div id="vk_community_messages"></div>
@@ -104,7 +66,7 @@ AppAsset::register($this);
 </footer>
 
 
-<?php if (!($_SERVER['HTTP_HOST'] === 'olympic:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru')) : ?>
+<?php if (!($_SERVER['HTTP_HOST'] == '127.0.0.1:8080' or $_SERVER['HTTP_HOST'] === 'aa:8080' or $_SERVER['HTTP_HOST'] == 'sdotest.3profi.ru')) : ?>
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function (d, w, c) {

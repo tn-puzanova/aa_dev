@@ -1,16 +1,15 @@
 <?php
 
-
 namespace dictionary\forms;
 
-
+use common\helpers\EduYearHelper;
 use dictionary\helpers\TemplatesHelper;
 use dictionary\models\Templates;
 use yii\base\Model;
 
 class TemplatesEditForm extends Model
 {
-    public $type_id, $name, $text, $name_for_user, $_templates;
+    public $type_id, $name, $text, $name_for_user, $year, $_templates;
 
     public function __construct(Templates $templates, $config = [])
     {
@@ -18,6 +17,7 @@ class TemplatesEditForm extends Model
         $this->name = $templates->name;
         $this->name_for_user = $templates->name_for_user;
         $this->text = $templates->text;
+        $this->year = $templates->year;
         $this->_templates = $templates;
 
         parent::__construct($config);
@@ -26,10 +26,10 @@ class TemplatesEditForm extends Model
     public function rules()
     {
         return [
-            [['type_id', 'name', 'text', 'name_for_user'], 'required'],
+            [['type_id', 'name', 'text', 'name_for_user', 'year'], 'required'],
             ['type_id', 'integer'],
             [['text', 'name', 'name_for_user'], 'string'],
-            [['text'], 'unique', 'targetClass' => Templates::class, 'filter' => ['<>', 'id', $this->_templates->id], 'targetAttribute' => ['type_id', 'text']],
+            [['text'], 'unique', 'targetClass' => Templates::class, 'filter' => ['<>', 'id', $this->_templates->id], 'targetAttribute' => ['type_id', 'text', 'year']],
             ['type_id', 'in', 'range' => TemplatesHelper::templatesType(), 'allowArray' => true],
         ];
     }
@@ -42,5 +42,10 @@ class TemplatesEditForm extends Model
     public function typeTemplatesList()
     {
         return TemplatesHelper::typeTemplatesList();
+    }
+
+    public function years(): array
+    {
+        return EduYearHelper::eduYearList();
     }
 }

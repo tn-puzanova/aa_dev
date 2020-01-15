@@ -4,6 +4,7 @@ namespace common\auth\helpers;
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use common\auth\models\User;
 
 class UserHelper
 {
@@ -40,4 +41,33 @@ class UserHelper
             'class' => $class,
         ]);
     }
+
+    public static function getAllUserId(): array
+    {
+        return User::find()->select('id')->column();
+    }
+
+    public static function getEmailByUserId($userId)
+    {
+        $user = User::find()->andWhere(['id' => $userId])->limit('1')->one();
+
+        if ($user) {
+            return $user->email;
+        }
+        return "Нет пользователя";
+    }
+
+    public static function isManagerOlympic()
+    {
+       return \Yii::$app->authManager->getAssignment('olymp_operator',\Yii::$app->user->identity->getId())  ?? false;
+    }
+
+    public static function getEmailUserId($userId)
+    {
+        $user = User::find()->andWhere(['id' => $userId])->limit('1')->one();
+        return $user->email ?? null;
+    }
+
+
+
 }

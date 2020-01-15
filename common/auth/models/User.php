@@ -3,6 +3,7 @@
 namespace common\auth\models;
 
 use common\auth\forms\SignupForm;
+use common\auth\forms\UserEmailForm;
 use olympic\forms\auth\UserEditForm;
 use olympic\forms\auth\UserCreateForm;
 use common\auth\helpers\UserHelper;
@@ -55,11 +56,12 @@ class User extends ActiveRecord
         $this->assignment->save();
     }
 
-    public static function create(UserCreateForm $form): self
+    public static function create(UserCreateForm $form, $github = null): self
     {
         $user = new static();
         $user->username = $form->username;
         $user->email = $form->email;
+        $user->github = $github;
         $user->setPassword(!empty($form->password) ? $form->password : Yii::$app->security->generateRandomString());
         $user->created_at = time();
         $user->status = UserHelper::STATUS_ACTIVE;
@@ -70,6 +72,13 @@ class User extends ActiveRecord
     public function edit(UserEditForm $form): void
     {
         $this->username = $form->username;
+        $this->email = $form->email;
+        $this->updated_at = time();
+    }
+
+
+    public function addEmail(UserEmailForm $form): void
+    {
         $this->email = $form->email;
         $this->updated_at = time();
     }
@@ -90,7 +99,7 @@ class User extends ActiveRecord
     public function confirmSignup(): void
     {
         if (!$this->isWait()) {
-            throw new \DomainException('Пользователь имеет статус "Активный"');
+            throw new \DomainException('Учетная запись уже подтверждена!');
         }
         $this->status = UserHelper::STATUS_ACTIVE;
     }
@@ -106,7 +115,7 @@ class User extends ActiveRecord
     public function resetPassword($password): void
     {
         if (empty($this->password_reset_token)) {
-            throw new \DomainException('Сброс пароля не требуется');
+            throw new \DomainException('Сброс пароля не запрашивался!');
         }
         $this->setPassword($password);
         $this->password_reset_token = null;

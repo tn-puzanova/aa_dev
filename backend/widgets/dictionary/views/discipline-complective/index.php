@@ -8,13 +8,13 @@ use dictionary\helpers\DictDisciplineHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $competitive_group_id int */
 
-\backend\assets\ModalAsset::register($this)
+\backend\assets\modal\ModalAsset::register($this)
 ?>
 <div class="box box-primary ">
     <div class="box-body">
         <?=Html::a('Добавить', ['dictionary/discipline-competitive-group/create',
                    'competitive_group_id' => $competitive_group_id],
-        ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'target' => '#modal', 'data-modalTitle' =>'Добавить дисциплину', 'class'=>'btn btn-primary']) ?>
+        ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-target' => '#modal', 'data-modalTitle' =>'Добавить дисциплину', 'class'=>'btn btn-primary']) ?>
 
         <?= \backend\widgets\adminlte\grid\GridView::widget([
             'dataProvider' => $dataProvider,
@@ -33,7 +33,7 @@ use dictionary\helpers\DictDisciplineHelper;
                         'update' => function ($url,DisciplineCompetitiveGroup $model) {
                             return Html::a(
                                 '<span class="glyphicon glyphicon-edit"></span>',
-                                $url, ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-modalTitle' =>'Редактировать дисциплину', 'target' => '#modal']);
+                                $url, ['data-pjax' => 'w0', 'data-toggle' => 'modal', 'data-modalTitle' =>'Редактировать дисциплину', 'data-target' => '#modal']);
                         },
                     ]
                 ],

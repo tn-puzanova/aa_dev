@@ -12,7 +12,7 @@ use yii\helpers\Html;
 ?>
     <div class="box">
         <div class="box-header">
-            <?= Html::a('Cоздать', ['olympic/olimpic-list/create', 'olimpic_id'=> $model->id], ['class' => 'btn btn-success']) ?>
+            <?=   !\common\auth\helpers\UserHelper::isManagerOlympic()  ? Html::a('Cоздать', ['olympic/olimpic-list/create', 'olimpic_id'=> $model->id], ['class' => 'btn btn-success']) : "" ?>
         </div>
         <div class="box-body">
             <?= \backend\widgets\adminlte\grid\GridView::widget([
@@ -34,11 +34,20 @@ use yii\helpers\Html;
                         },
                     ],
                     'year',
-                    ['value' => function($model) {
-                        return Html::a('Копировать', ['olympic/olimpic-list/copy', 'id' => $model->id], ['class' => 'btn btn-info']);
+                    ['value' => function (\olympic\models\OlimpicList $model) {
+                    $url = 'olympic/personal-presence-attempt'. ($model->isResultEndTour() ? '/index' : '/create') ;
+                    return Html::a('Участники', [ 'olympic/user-olympic/index',
+                            'olympic_id' => $model->id], ['class' => 'btn btn-success btn-block'])."</br>".
+                        ($model->isTimeStartTour() ? Html::a('Ведомость', [
+                            $url,
+                            'olympic_id' => $model->id], ['class' => 'btn btn-warning btn-block'])."</br>":"").
+                        ( !\common\auth\helpers\UserHelper::isManagerOlympic() ?
+                        Html::a('Копировать', ['olympic/olimpic-list/copy', 'id' => $model->id], ['class' => 'btn btn-info btn-block']) :"");
                     }, 'format' => "raw"],
                     ['class' => \yii\grid\ActionColumn::class,
-                        'controller' => 'olympic/olimpic-list'],
+                        'controller' => 'olympic/olimpic-list',
+                        'template'=> !\common\auth\helpers\UserHelper::isManagerOlympic()  ? "{update} {view} {delete}" : "{view}"
+                        ],
                 ]
             ]); ?>
         </div>

@@ -3,6 +3,7 @@
 namespace backend\controllers\olympic;
 
 
+use olympic\forms\OlimpicListCopyForm;
 use olympic\forms\OlimpicListCreateForm;
 use olympic\forms\OlimpicListEditForm;
 use olympic\forms\search\OlimpicListSearch;
@@ -116,17 +117,17 @@ class OlimpicListController extends Controller
     public function actionCopy($id)
     {
         $model = $this->findModel($id);
-        $form = new OlimpicListEditForm($model);
+        $form = new OlimpicListCopyForm($model);
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try {
-                $this->service->copy($form);
-                return $this->redirect(['view', 'id'=> $model->id]);
+                 $copy = $this->service->copy($form);
+                return $this->redirect(['view', 'id'=> $copy->id]);
             } catch (\DomainException $e) {
                 Yii::$app->errorHandler->logException($e);
                 Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
-        return $this->render('update', [
+        return $this->render('copy', [
             'model' => $form,
             'olympic' => $model,
         ]);
@@ -148,6 +149,7 @@ class OlimpicListController extends Controller
     /**
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionDelete($id)
     {
